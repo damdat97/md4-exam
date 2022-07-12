@@ -250,7 +250,7 @@ function editProduct() {
 }
 
 function deleteCity(id){
-    if (confirm("Bạn có chắc chắn muốn xoá sản phẩm ko ???")) {
+    if (confirm("Bạn có chắc chắn muốn xoá thanh pho ko ???")) {
         $.ajax({
             type: 'DELETE',
             url: 'http://localhost:8080/city/'+id,
