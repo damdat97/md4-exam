@@ -31,9 +31,9 @@ function loadListCity(){
         success: function (data) {
             let html1 = "";
             for (let i = 0; i < data.length; i++) {
-                html1 += `<tr><th scope="row">${i}</th>
-                          <td>${data[i].id}</td>
-                          <td><a onclick="viewDetail()">${data[i].name}</a></td>
+                html1 += `<tr><th scope="row">${i+1}</th>
+                        
+                          <td><a onclick="viewDetail(${data[i].id})">${data[i].name}</a></td>
                           <td>${data[i].country.name}</td>
                           <td><button class="btn btn-outline-secondary mr-2" onclick="showEdit(${data[i].id})">Sửa</button>
                           <Button class="btn btn-outline-danger" onclick="deleteCity(${data[i].id},'${data[i].name}')">Xoá</Button></td></tr>`
@@ -45,8 +45,28 @@ function loadListCity(){
     })
 }
 
-function viewDetail(){
+function viewDetail(id){
+    $.ajax ({
+        type: "GET",
+        url: "http://localhost:8080/city/" + id,
+        success: function (data) {
+            console.log(data)
+            let str = `<h1>Thanh pho ${data.name}</h1>
+    <button onclick="showCityHome()">Xem danh sach thanh pho</button>
+    <p>Ten: ${data.name}</p>
+    <p>Quoc gia: ${data.country.name}</p>
+    <p>Dien tich: ${data.area}</p>
+    <p>Dan so: ${data.population}</p>
+    <p>GDP: ${data.gdp}</p>
+    <p>Gioi thieu: </p>
+    <p>${data.description}</p>
+    <button onclick="showEdit(${data.id})">Chinh sua</button>
+    <button onclick="deleteCity(${data.id})">Xoa</button>`
 
+            console.log(str)
+            content.innerHTML = str
+        }
+    })
 }
 
 function showAddForm() {
@@ -201,31 +221,29 @@ function editProduct() {
     let description = document.getElementById("descriptionEdit").value;
     let population = document.getElementById("populationEdit").value;
     let area = document.getElementById("areaEdit").value;
-
-    let categoryId = document.getElementById("category").value;
-    let house = {
+    let countryId = document.getElementById("country").value;
+    let gdp = document.getElementById("gdpEdit").value;
+    let city = {
         name: name,
-        description : description,
-        price : price,
-        quantity: quantity ,
-        img: img,
-        category: {
-            id: categoryId
-        }
+        population: population,
+        description: description,
+        country: {
+            id: countryId
+        },
+        area: area,
+        gdp: gdp
     }
     $.ajax({
-        type:"PUT",
-        headers:{
-            Authorization: 'Bearer ' + localStorage.getItem('token'),
+        headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        url:"http://localhost:8081/products/"+id,
-        data :JSON.stringify(house),
+        type: 'PUT',
+        url: 'http://localhost:8080/city/' + id,
+        data :JSON.stringify(city),
         success: function () {
             $('#editModal').modal('hide');
-            loadUserHome()
-            localStorage.removeItem(key);
+            showCityHome()
         },
         error: function (error) {
             console.log(error)
@@ -233,18 +251,13 @@ function editProduct() {
     })
 }
 
-function deleteProduct(id){
+function deleteCity(id){
     if (confirm("Bạn có chắc chắn muốn xoá sản phẩm ko ???")) {
         $.ajax({
-
-            headers:{
-                Authorization: 'Bearer ' + localStorage.getItem('token')
-            },
-
             type: 'DELETE',
-            url: 'http://localhost:8081/products/'+id,
+            url: 'http://localhost:8080/city/'+id,
             success: function (){
-                listProduct()
+                showCityHome()
             },
             error: function (error) {
                 console.log(error)
