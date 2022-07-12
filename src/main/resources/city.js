@@ -3,7 +3,7 @@ let content = document.getElementById('content')
 function showCityHome() {
     let html = `
         <div class="col-12" >
-        <h2 style="text-align: center" >Danh sách học sinh</h2>
+        <h2 style="text-align: center" >Danh sách thanh pho</h2>
         
         <h4 style="text-align: center; cursor: pointer; color: blue" onclick="showAddForm()">Thêm mới</h4>
             <table class="table table-striped">
@@ -62,8 +62,6 @@ function viewDetail(id){
     <p>${data.description}</p>
     <button onclick="showEdit(${data.id})">Chinh sua</button>
     <button onclick="deleteCity(${data.id})">Xoa</button>`
-
-            console.log(str)
             content.innerHTML = str
         }
     })
